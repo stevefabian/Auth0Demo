@@ -1,0 +1,57 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<style>
+    .results {
+        min-width: 100%;
+        border: 1px solid black;
+        margin-top: 23px;
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        $(".btn-public").click(function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: "api/data/public"
+            }).done(function(response) {
+                $(".results").val(response);
+            }).fail(function(err) {
+                $(".results").val(err.responseText);
+            });
+        });
+        $(".btn-private").click(function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: "api/data/private"
+            }).done(function (response) {
+                $(".results").val(response);
+            }).fail(function (err) {
+                $(".results").val(err.responseText);
+            });
+        });
+    });
+</script>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Auth0 Demo</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <button class="btn btn-primary btn-public">Call Public API</button>
+        </div>
+        <div class="col-md-3">
+            <button class="btn btn-primary btn-private">Call Private API</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <textarea class="results" rows="10"></textarea>
+        </div>
+    </div>
+</div>

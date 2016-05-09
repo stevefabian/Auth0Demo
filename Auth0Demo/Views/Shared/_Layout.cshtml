@@ -1,0 +1,102 @@
+﻿@using System.Security.Claims
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+
+    <style>
+        .btn-login {
+            position: relative;
+            top: 8px;
+        }
+        .btn-logout {
+            position: relative;
+            top: 8px;
+        }
+        .profile-name {
+            color: white;
+            position: relative;
+            top: 8px;
+        }
+        .profile-img {
+            position: relative;
+            top: 8px;
+            width: 36px;
+        }
+    </style>
+
+    <script src="https://cdn.auth0.com/js/lock-9.1.min.js"></script>
+    <script type="text/javascript">
+
+      var lock = new Auth0Lock('Nt2dQTOnfpUauWdUyeOTOYMWKxpRkItQ', 'gooddogs.auth0.com');
+
+
+      function signin() {
+        lock.show({
+            callbackURL: 'http://localhost:52594/LoginCallback.ashx'
+          , responseType: 'code'
+          , authParams: {
+            scope: 'openid profile'
+          }
+        });
+      }
+    </script>
+
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                    <li>@Html.ActionLink("About", "About", "Home")</li>
+                    @if (ClaimsPrincipal.Current.Claims.Any())
+                    {
+                        <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                    }
+                </ul>
+                <div class="pull-right">
+                    @if (ClaimsPrincipal.Current.Claims.Any())
+                    {
+                        <img class="profile-img" src="@ClaimsPrincipal.Current.Claims.First(x => x.Type == "picture").Value"/>
+                        <span class="profile-name">
+                            @ClaimsPrincipal.Current.Claims.First(x => x.Type == "name").Value
+                        </span>
+                        <a href="/Home/Logout" class="btn btn-primary btn-logout">Logout</a>
+                    }
+                    else
+                    {
+                        <button class="btn btn-primary btn-login" onclick="window.signin();">Login</button>
+                    }
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+        </footer>
+    </div>
+
+
+</body>
+</html>
